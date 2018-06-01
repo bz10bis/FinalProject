@@ -1,0 +1,15 @@
+{
+    "name": "academiatoken",
+    "version": "1.0.0",
+    "description": "Create an ecr20 token and a sale page",
+    "main": "index.js",
+    "directories": {
+      "test": "test"
+    },
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "baptiste zegre",
+    "license": "ISC"
+  }
+  
