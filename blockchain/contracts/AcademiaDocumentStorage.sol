@@ -4,6 +4,10 @@ import "./AcademiaToken.sol";
 
 contract AcademiaDocumentStorage is AcademiaToken {
 
+    using SafeMath for uint256;
+
+    uint8 public uploadPrice = 100;
+
     struct Document {
         string name;
         uint docHash;
@@ -36,10 +40,12 @@ contract AcademiaDocumentStorage is AcademiaToken {
         _;
     }
 
-    function createDocument(string _name, uint _docHash) public {
+    function createDocument(string _name, uint _docHash) public payable returns(bool) {
+        require(balanceOf[msg.sender] >= uploadPrice);
         uint id = documents.push(Document(_name, _docHash)) - 1;
         documentToOwner[id] = msg.sender;
         ownerToDocumentsCount[msg.sender]++;
+        balanceOf[msg.sender] = balanceOf[msg.sender].sub(uploadPrice);
         emit NewDocument(msg.sender, id, _docHash);
     }
 
