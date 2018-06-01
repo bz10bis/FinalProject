@@ -2,11 +2,9 @@ pragma solidity ^0.4.2;
 
 import "./AcademiaToken.sol";
 
-contract AcademiaDocumentStorage is AcademiaToken {
+contract AcademiaDocumentStorage is AcademiaToken(1000000) {
 
-    using SafeMath for uint256;
-
-    uint8 public uploadPrice = 100;
+    uint public uploadPrice;
 
     struct Document {
         string name;
@@ -40,13 +38,18 @@ contract AcademiaDocumentStorage is AcademiaToken {
         _;
     }
 
-    function createDocument(string _name, uint _docHash) public payable returns(bool) {
+    constructor (uint _uploadPrice) public {
+        uploadPrice = _uploadPrice;
+    }
+
+    function createDocument(string _name, uint _docHash) public payable returns(bool success) {
         require(balanceOf[msg.sender] >= uploadPrice);
         uint id = documents.push(Document(_name, _docHash)) - 1;
         documentToOwner[id] = msg.sender;
         ownerToDocumentsCount[msg.sender]++;
         balanceOf[msg.sender] = balanceOf[msg.sender].sub(uploadPrice);
         emit NewDocument(msg.sender, id, _docHash);
+        return true;
     }
 
     function updateDocument(uint _docId, uint _newHash) public onlyOwner(_docId) {
