@@ -1,6 +1,6 @@
 var AcademiaDocumentStorage = artifacts.require('./AcademiaDocumentStorage.sol');
 
-constract('AcademiaDocumentStorage', function(accounts) {
+contract('AcademiaDocumentStorage', function(accounts) {
     it('Initialize with correct values', function() {
         return AcademiaDocumentStorage.deployed().then(function(instance) {
             tokenInstance = instance;
