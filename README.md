@@ -1,3 +1,7 @@
+#Status
+### Status
+[![Build Status](https://travis-ci.org/bz10bis/FinalProject.svg?branch=master)](https://travis-ci.org/bz10bis/FinalProject.svg?branch=master)
+
 # FinalProject
 Repository of our final project 
 
