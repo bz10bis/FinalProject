@@ -2,9 +2,16 @@ pragma solidity ^0.4.2;
 
 import "./AcademiaToken.sol";
 
-contract AcademiaDocumentStorage is AcademiaToken(1000000) {
+contract AcademiaTokenInterface {
+    function balanceOf(address _admin) public returns(uint);
+    function transfer(address _to, uint _value) public returns (bool success);
+}
 
+contract AcademiaDocumentStorage {
+
+    AcademiaTokenInterface academiaTokenContract;
     uint public uploadPrice;
+    address private admin;
 
     struct Document {
         string name;
@@ -33,21 +40,34 @@ contract AcademiaDocumentStorage is AcademiaToken(1000000) {
         address _newOwner
     );
 
+    event UpdateAddress(
+        address admin,
+        address newAddress
+    );
+
     modifier onlyOwner(uint _docId) {
         require(msg.sender == documentToOwner[_docId]);
         _;
     }
 
-    constructor (uint _uploadPrice) public {
+    modifier onlyAdmin() {
+        require(msg.sender == admin);
+        _;
+    }
+
+    constructor (uint _uploadPrice, address _tokenAddress) public {
         uploadPrice = _uploadPrice;
+        admin = msg.sender;
+        academiaTokenContract = AcademiaTokenInterface(_tokenAddress);
     }
 
     function createDocument(string _name, uint _docHash) public payable returns(bool success) {
-        require(balanceOf[msg.sender] >= uploadPrice);
+        require(academiaTokenContract.balanceOf(msg.sender) >= uploadPrice);
         uint id = documents.push(Document(_name, _docHash)) - 1;
         documentToOwner[id] = msg.sender;
         ownerToDocumentsCount[msg.sender]++;
-        balanceOf[msg.sender] = balanceOf[msg.sender].sub(uploadPrice);
+        academiaTokenContract.transfer(admin, uploadPrice);
+        //academiaTokenContract.balanceOf(msg.sender) = academiaTokenContract.balanceOf(msg.sender).sub(uploadPrice);
         emit NewDocument(msg.sender, id, _docHash);
         return true;
     }
@@ -64,5 +84,10 @@ contract AcademiaDocumentStorage is AcademiaToken(1000000) {
         ownerToDocumentsCount[_newOwner]++;
         documentToOwner[_docId] = _newOwner;
         emit TransferDocument(_docId, msg.sender, _newOwner);
+    }
+
+    function setAcademiaTokenContractAddress(address _tokenAddress) external onlyAdmin {
+        academiaTokenContract = AcademiaTokenInterface(_tokenAddress);
+        emit UpdateAddress(msg.sender, _tokenAddress);
     }
 }
