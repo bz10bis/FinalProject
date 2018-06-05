@@ -9,7 +9,7 @@ var academiaTokenContractAddress;
 
 module.exports = function(deployer) {
   deployer.deploy(AcademiaToken, initialCoinSupply).then(function() {
-    return deployer.deploy(AcademiaTokenSale, AcademiaToken.address, tokenPrice);    
+    deployer.deploy(AcademiaTokenSale, AcademiaToken.address, tokenPrice);    
+    return deployer.deploy(AcademiaDocumentStorage, uploadPrice, AcademiaToken.address); 
   });
-  deployer.deploy(AcademiaDocumentStorage, uploadPrice);
 };
