@@ -1,6 +1,6 @@
 pragma solidity ^0.4.2;
 
-import "./AcademiaToken.sol";
+//import "./AcademiaToken.sol";
 
 contract AcademiaTokenInterface {
     function balanceOf(address _admin) public returns(uint);
