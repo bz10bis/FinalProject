@@ -8,7 +8,7 @@ contract AcademiaToken {
 
     string public name = "Academia Token";
     string public symbol = "ACT";
-    uint8 public decimals = 18;
+    uint8 public decimals = 0;
     uint public totalSupply;
 
     mapping (address => uint) public balanceOf;
