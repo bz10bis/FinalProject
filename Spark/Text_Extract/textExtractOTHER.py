@@ -13,11 +13,11 @@ def getText(filename):
     return text
 
 def cleanText(strValue):
-    text = re.sub(r'[!@#$%^&*()_+<>\'\"?\’’\.,,]', ' ', strValue)
-    text = text.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+    text = re.sub('[\[\]\!\@\#\$\%\^\&\*\(\)\_\-\–\;\+\<\>\°\'\"\?\’\’\.\,\,\:\‘\«\»\:\\\/\…\$\£\`\¤\§\#\~\|\`\^\@\€]', ' ', strValue)
+    text = text.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').replace(u'\xa0', ' ')
     text = re.sub(' +', ' ', text)
     return text
-
+    
 try:
     text = getText(inFile)
     cleaned_text = cleanText(text)
