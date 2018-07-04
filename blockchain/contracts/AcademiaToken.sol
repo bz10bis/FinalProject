@@ -1,7 +1,9 @@
 pragma solidity ^0.4.2;
 
 import "./SafeMath.sol";
+//import "./ERC20interface.sol";
 
+//contract AcademiaToken is ERC20Interface {
 contract AcademiaToken {
     
     using SafeMath for uint256;
