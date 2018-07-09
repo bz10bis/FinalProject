@@ -1,5 +1,3 @@
-// TO DO: Add a Ownable class to replace onlyOwner and onlyAdmin method
-
 pragma solidity ^0.4.2;
 
 contract AcademiaTokenInterface {
@@ -35,5 +33,4 @@ contract AcademiaGroupManager {
         academiaTokenContract.transfer(this, joinPrice);
         emit NewMember(msg.sender);
     }
-
 }
