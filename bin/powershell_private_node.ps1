@@ -17,17 +17,18 @@ $download_node = $TRUE
 #GIT
 $git_version = "2.18.0"
 $git_url = "https://github.com/git-for-windows/git/releases/download/v2.18.0.windows.1/Git-2.18.0-64-bit.exe"
+$download_git = $FALSE
 
 #GETH
 $geth_version = ""
-$install_node = $FALSE
+$install_eth = $TRUE
 
 $global_time = Get-Date
 # require admin right
-if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-   write-Warning "This setup needs admin permissions. Please run this file as admin."     
-   break
-}
+# if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+#    write-Warning "This setup needs admin permissions. Please run this file as admin."     
+#    break
+# }
 
 <##############################################
   GIT INSTALLTION
@@ -39,7 +40,7 @@ if ($install_git) {
     }
 
     if ($git_current_version) {
-        write-host "[GIT] $git_current_version detected. Proceeding ..."
+        write-host "[GIT] $git_current_version detected ..."
     } else {
         $git_exe = "$PSScriptRoot\git-installer.exe"
 
@@ -79,7 +80,7 @@ if (Get-Command node -errorAction SilentlyContinue) {
 }
 
 if ($current_version)  {
-    write-host = "[NODE] nodejs $current_version is already installed"
+    write-host "[NODE] nodejs $current_version is already installed"
     $conf = read-host "[NODE] Do you want to replace this version (be carefull updating node may breaks things !) [Y/n]"
     if ($conf -ne "Y") {
         $install_node = $FALSE
@@ -111,7 +112,7 @@ if ($install_node) {
 
 if ($install_geth) {
     write-host "[NODE] installing geth"
-    npm install --global geth
+    npm install -g geth
 }
 
 if ($install_truffle) {
@@ -123,10 +124,10 @@ if ($install_truffle) {
   ACADMEIA NODE
 ###############################################>
 
-if ($install_node) {
+if ($install_eth) {
     New-Item -ItemType directory -Path C:\Academia\node\
     geth --rpc --datadir C:\Academia\node\ init academia_genesis.json
-    geth --rpc --rpcport 8546 --port 30304 --rpcaddr 127.0.0.1 --rpcapi eth,net,web3,personal,clique --datadir C:\Academia\node\ --unlock exempleAddress --networkid 15 --mine --bootnodes <enode://myenode>  
+    geth --rpc --rpcport 8546 --port 30304 --rpcaddr  --rpcapi eth,net,web3,personal,clique --datadir C:\Academia\node\ --unlock exempleAddress --networkid 15 --mine --bootnodes enode://93d53ab2d8478396ea1ab60aeb92d7099aa6ef7c6b23f588c675ecb7bc608e4226e09308e71e558a66ca0af5f6f910f58d8a62640804be37c95b5de151c20cd3@51.38.189.242:30303  
 }
 
 <##############################################
@@ -140,9 +141,6 @@ if ($confirmation -eq "y") {
     }
     if ($git_exe -and (Test-Path $git_exe)) {
         rm $git_exe
-    }
-    if ($vsc_exe -and (Test-Path $vsc_exe)) {
-        rm $vsc_exe
     }
 }
 
