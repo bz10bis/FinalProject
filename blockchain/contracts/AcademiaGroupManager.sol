@@ -33,5 +33,4 @@ contract AcademiaGroupManager {
         academiaTokenContract.transfer(this, joinPrice);
         emit NewMember(msg.sender);
     }
-
 }
