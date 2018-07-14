@@ -1,6 +1,7 @@
 import PyPDF2 as pdf 
 import sys
 import re
+import unidecode
 
 inFile = sys.argv[1]
 outFile = sys.argv[2]
@@ -14,7 +15,10 @@ def getText(filename):
         while count < num_pages:
             pageObj = pdfReader.getPage(count)
             count +=1
+            brut_text = pageObj.extractText()
+            cleaned_text
             text += pageObj.extractText()
+
     return '\n'.join(text)
 
 def cleanText(strValue):
@@ -24,9 +28,15 @@ def cleanText(strValue):
     return text
     
 try:
+    print("********** BEGINNING PROCESS **********")
     text = getText(inFile)
-    cleaned_text = cleanText(text)
+    if text != "":
+        cleaned_text = cleanText(text)
+    else:
+        print("text empty")
     with open(outFile, 'w') as of:
-        of.write(cleaned_text)
+        print("Writing File")
+        ct = unidecode.unidecode(cleaned_text)
+        print(ct)
 except Exception as e:
     print(e)
