@@ -1,16 +1,41 @@
 {
-  "name": "reactblockexplorer",
+  "name": "blockexplorer",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "apisauce": "^0.15.2",
+    "axios": "^0.18.0",
+    "cors": "^2.8.4",
+    "express-fileupload": "^0.4.0",
     "react": "^16.4.0",
+    "react-bootstrap": "^0.32.1",
     "react-dom": "^16.4.0",
-    "react-scripts": "1.1.4"
+    "react-dropzone": "^4.2.13",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "1.1.4",
+    "truffle": "^4.1.11",
+    "web3": "^1.0.0-beta.34",
+    "webpack": "^3.11.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bz10bis/ReactBlockExplorer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bz10bis/ReactBlockExplorer/issues"
+  },
+  "homepage": "https://github.com/bz10bis/ReactBlockExplorer#readme",
+  "devDependencies": {
+    "webpack-dev-server": "^3.1.4"
   }
 }
