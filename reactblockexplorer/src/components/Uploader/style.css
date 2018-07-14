@@ -1,0 +1,11 @@
+.upload-drop-zone {
+    height: 200px;
+    width:100%;
+    border: 1px dashed black;
+    margin: 20px auto 20px auto;
+    border-radius: 10px;
+}
+
+.Uploader {
+    margin-top: 50px;
+}
