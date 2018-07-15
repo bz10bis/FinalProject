@@ -18,6 +18,7 @@ RUN pip3 install nltk
 RUN pip3 install numpy
 RUN pip3 install unidecode
 
+RUN cp /usr/bin/python3.6 /usr/bin/python
 RUN mkdir -p /usr/local
 ADD spark-2.3.1-bin-hadoop2.7.tgz /usr/local/
 RUN cd /usr/local && ln -s spark-2.3.1-bin-hadoop2.7 spark
