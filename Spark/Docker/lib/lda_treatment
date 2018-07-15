@@ -1,0 +1,3 @@
+string="$1"
+
+python /home/LDA/lib/LDA_pyspark.py $string
