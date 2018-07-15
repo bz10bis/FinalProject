@@ -14,7 +14,8 @@ import sys, os
 from threading import Thread
 import time
 import textExtractDOCX_new as dx
-import LDA_pyspark as lda
+import textExtractPDF as px
+# import LDA_pyspark as lda
 
 _demo = False
 
@@ -37,6 +38,50 @@ def jsonp(func):
 
     return ftemp
 
+def find_ext(filename):
+    try:
+        ext = filename.strip().split('.')
+        if ext[-1].upper() in ["DOCX", "PDF", "TXT"]:
+            return ext[-1].upper()
+        else:
+            return 0
+    except Exception as e:
+        raise e
+
+def pdf_process(file):
+    try:
+        print("********** BEGINNING PDF PROCESS **********")
+        text = px.getText(file)
+        if text != "":
+            cleaned_text = px.cleanText(text)
+            ct = px.unidecode.unidecode(cleaned_text)
+            return ct
+        else:
+            print("Text empty")
+            exit(0)
+
+    except Exception as e:
+        print(e)
+        exit(0)
+
+def docx_process(file):
+    try:
+        print("********** BEGINNING DOCX PROCESS **********")
+        text = dx.getText(file)
+        if text != "":
+            cleaned_text = dx.cleanText(text)
+            ct = dx.unidecode.unidecode(cleaned_text)
+            return ct
+        else:
+            print("Text empty")
+            exit(0)
+
+    except Exception as e:
+        print(e)
+        exit(0)
+
+def other_process(file):
+    return 0
 
 # Récupère les msg envoyés par un broker kafka
 class parsing(object):
@@ -46,24 +91,19 @@ class parsing(object):
             ff = os.path.join(r"D:\Documents\test_parsing_doc", file)
         except Exception as e:
             ff = ""
-            print("rate 1")
+            data = "Error"
             print(e)
 
         if ff != "":
-
-            try:
-                print("********** BEGINNING PROCESS **********")
-                text = dx.getText(ff)
-                if text != "":
-                    cleaned_text = dx.cleanText(text)
-                    ct = dx.unidecode.unidecode(cleaned_text)
-                    data = ct
-                else:
-                    print("Text empty")
-
-            except Exception as e:
-                print(e)
-
+            ext_val = find_ext(ff)
+            if ext_val == "DOCX":
+                data = docx_process(ff)
+            elif ext_val == "PDF":
+                data = pdf_process(ff)
+            elif ext_val == "TXT":
+                data = other_process(ff)
+            else:
+                data = "nothing"
 
             # try:
             #     data_cleaned = lda.strip_words(data)
