@@ -61,12 +61,12 @@ contract AcademiaDocumentStorage {
         academiaTokenContract = AcademiaTokenInterface(_tokenAddress);
     }
 
-    function createDocument(string _name, uint _docHash) public payable returns(bool success) {
+    function createDocument(string _name, uint _docHash) public returns(bool success) {
         require(academiaTokenContract.balanceOf(msg.sender) >= uploadPrice);
         uint id = documents.push(Document(_name, _docHash)) - 1;
         documentToOwner[id] = msg.sender;
         ownerToDocumentsCount[msg.sender]++;
-        academiaTokenContract.transfer(admin, uploadPrice);
+        //academiaTokenContract.transfer(admin, uploadPrice);
         //academiaTokenContract.balanceOf(msg.sender) = academiaTokenContract.balanceOf(msg.sender).sub(uploadPrice);
         emit NewDocument(msg.sender, id, _docHash);
         return true;
