@@ -38,4 +38,4 @@ ADD test/test_text.txt /home/LDA/test
 ADD lib/lda_treatment /usr/bin
 RUN chmod +x /usr/bin/lda_treatment
 
-# ENTRYPOINT ["/etc/bootstrap.sh"]
+ENTRYPOINT ["/usr/bin/lda_treatment", "/home/LDA/test/test_text.txt"]
