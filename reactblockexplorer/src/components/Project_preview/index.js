@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import './style.css';
-import {BrowserRouter, Route, NavLink} from 'react-router-dom';
+//import {BrowserRouter, Route, Link} from 'react-router-dom';
 import Project from '../Project'
 
 class Project_preview extends Component {
@@ -12,7 +12,7 @@ class Project_preview extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            key       : props.id,
+            key      : props.id,
             name     : props.name,
             date     : props.date,
             describe : props.describe,
@@ -27,7 +27,9 @@ class Project_preview extends Component {
 
     project_details = (props) => {
         if(this.state.status === "Hide"){
-            this.state.status = 'Details';
+            this.setState({
+                status: 'Details'
+            });
             return (
                 <div>
 
@@ -35,7 +37,9 @@ class Project_preview extends Component {
             )
         }
         if(this.state.status === "Details") {
-            this.state.status = 'Hide';
+            this.setState({
+                status: 'Hide'
+            });
             return (
                 <Project  {...props}/>
             )
@@ -46,7 +50,17 @@ class Project_preview extends Component {
             return (
                 <div className="list-group-item list-group-item-action flex-column">
                     <div className="preview">
-                        <h3 className="mb-1">Title : {this.state.name}</h3>
+                        <div id="id_title" className="row">
+                            <div className="col-md-6 col-sx-4">
+                                <h3 className="mb-1">Title : {this.state.name}</h3>
+                            </div>
+                            <div id="id_icones" className="col-md-6 col-sx-4">
+                                <i className="fas fa-info-circle"> </i>
+                                <i className="fas fa-download"> </i>
+                            </div>
+                        </div>
+
+                        <br/>
                         <p><i className="fas fa-user-graduate"> </i>  Advisor : {this.state.teatcher}</p>
                         <p><i className="far fa-calendar-alt"> </i>  Assignement date : {this.state.date}</p>
                         <p><i className="far fa-calendar-alt"> </i>  Due date : {this.state.date}</p>
@@ -55,16 +69,15 @@ class Project_preview extends Component {
                     </div>
 
 
-                    <BrowserRouter>
-                        <div>
+                    {/*<BrowserRouter>*/}
+                        {/*<div>*/}
                             {/*<Route path="/Project" render={()=><Project  name={this.props.name} date={this.props.date} describe={this.props.describe} teatcher={this.props.teatcher} deadline={this.props.deadline} deliverable={this.props.deliverable}/>}/>*/}
-                            <Route exact path="/Project" key={this.state.id} render={this.project_details}/>
-                            <button>
-                                <NavLink to="/Project">{this.state.status}</NavLink>
-                            </button>
+                            {/*<Route exact path="/Project" key={this.state.id} render={this.project_details}/>*/}
+                            {/*<Link to="/Project"><i className="fas fa-caret-square-down"> </i></Link>*/}
+                        {/*</div>*/}
+                    {/*</BrowserRouter>*/}
 
-                        </div>
-                    </BrowserRouter>
+
                 </div>
             );
         }

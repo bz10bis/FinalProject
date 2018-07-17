@@ -23,7 +23,7 @@ class Project extends Component {
 
     render() {
         return (
-            <Uploader/>
+            <Uploader {...this.props}/>
         );
     }
 }

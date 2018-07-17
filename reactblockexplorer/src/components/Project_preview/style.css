@@ -2,6 +2,21 @@
     text-align: left;
 }
 
-h3 {
+#id_title {
     border-bottom: 1px solid;
+}
+
+Link {
+    display: block;
+    height:100%;
+}
+
+i {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+#id_icones {
+    margin-top: 30px;
+    text-align: right;
 }

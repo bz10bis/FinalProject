@@ -1,0 +1,10 @@
+.blockchainFiles_header i{
+    font-size:40px;
+}
+
+.blockchainFiles_header {
+    font-size: 40px;
+    background-color: lightgrey;
+    border-radius: 10px 10px 0 0;
+    height: 50px;
+}
