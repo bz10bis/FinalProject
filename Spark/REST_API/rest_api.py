@@ -113,8 +113,6 @@ def saveFile(file, token):
     f = ""
     for w in tokens[token]:
         f += w+":"+tokens[token][w]+"\n"
-    with open(newfile, "w") as fo:
-        fo.write(f)
 
     try:
         container = client.containers.run('spark_vm/testimage:v3.3', command=['tail -f /dev/null'], name="hadoop", tty=True, detach=True)
@@ -133,6 +131,7 @@ def saveFile(file, token):
     container.put_archive(path="/files", data=pw_tarstream)
     a = container.exec_run("hadoop fs -put /files/"+newfile+" /files ")
     print(a)
+    
     
 
 def lda_docker(stringText, token):
