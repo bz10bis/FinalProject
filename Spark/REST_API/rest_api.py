@@ -7,21 +7,17 @@ import hashlib
 import cherrypy
 import sys
 from cherrypy import _cperror
-from datetime import datetime
-from datetime import timedelta
+from pyspark.sql import SparkSession
 import random
 import os
 from os.path import basename
 from threading import Thread
-import time
 import textExtractDOCX_new as dx
 import textExtractPDF as px
 import textExtractOTHER as ox
 import LDA_pyspark as lda
-# import docker
-import tarfile
-from io import BytesIO
-import PyPDF2
+from pyspark.context import SparkContext
+from pyspark.sql import SQLContext
 
 _demo = False
 
@@ -128,19 +124,23 @@ def hashDoc(string, token):
 
 
 def saveFile(file, token):
-
+    global tokens
     newfile = basename(file)
-    newfile = "meta_"+newfile+".txt"
-    # newfile = os.path.join("D:\Documents\\test_parsing_doc",newfile)
-    f = ""
-    for w in tokens[token]:
-        f += w+":"+tokens[token][w]+"\n"
+    newfile = "meta_"+newfile+".json"
+    newfile = os.path.join("/root", "documents", newfile)
+
+    tokens[token]["saved"] = newfile
+    f = {"token": tokens[token]["token"],
+         "filename": tokens[token]["filename"],
+         "parsing": tokens[token]["parsing"],
+         "topics": tokens[token]["topics"],
+         "hashCode": tokens[token]["hashCode"],
+         "saved": tokens[token]["saved"]}
+
     with open(newfile, "w") as of:
-        of.write(f)
+        of.write(simplejson.dumps(f))
 
-
-
-    print(a)
+    os.rename(os.path.join("/home","FinalProject","ExpressServer","uploads", file), os.path.join("/root", "documents", file))
 
 
 def lda_spark(stringText, token):
@@ -151,7 +151,8 @@ def lda_spark(stringText, token):
 
 def parsingFile(file, token):
     global tokens
-    try:    
+    try:
+        # ff = os.path.join("D:\\PROJET_ANNUEL\\FinalProject\\ExpressServer\\uploads", file)
         ff = os.path.join("/home","FinalProject","ExpressServer","uploads", file)
     except Exception as e:
         ff = ""
@@ -167,16 +168,33 @@ def parsingFile(file, token):
             data = other_process(ff)
         else:
             data = "nothing"
-        tokens[token]["parsing"] = data
+        tokens[token]["parsing"] = "OK"
         return data
 
 
 def globalProcess(file, token):
+    global tokens
     try:
-        # saveFile(file, token)
-        stringDoc = parsingFile(file, token)
-        hashDoc(stringDoc, token)
-        lda_spark(stringDoc, token)
+        try:
+            stringDoc = parsingFile(file, token)
+        except:
+            tokens[token]["parsing"] = "FAILED"
+            pass
+        try:
+            hashDoc(stringDoc, token)
+        except:
+            tokens[token]["hashCode"] = "FAILED"
+            pass
+        try:
+            lda_spark(stringDoc, token)
+        except:
+            tokens[token]["topics"] = "FAILED"
+            pass
+        try:
+            saveFile(file, token)
+        except:
+            tokens[token]["saved"] = "FAILED"
+            pass
         print("DONE FOR TOKEN " + token)
     except Exception as e:
         raise e
@@ -185,23 +203,25 @@ def globalProcess(file, token):
 class upload(object):
     @jsonp
     def index(self, file):
-        global tokens 
+        global tokens
         try:
             tok = ''
             # verification si fichier existe
-            if os.path.exists(os.path.join("/home","FinalProject","ExpressServer","uploads", file)):
+            if os.path.exists(os.path.join("/home", "FinalProject", "ExpressServer", "uploads", file)):
                 # Create random token
                 tok = ''.join(random.choice("abcdefghijklmnopqrstuvwxyz1234567890") for _ in range(25))
                 # initialisation de la variable
                 if tok not in tokens:
-                    tokens[tok] = {"parsing" : "pending",
+                    tokens[tok] = {"token" : tok,
+                                   "filename" : file,
+                    "parsing" : "pending",
                     "topics" : "pending",
                     "hashCode" : "pending",
                     "saved" : "pending"}
                     thread = Thread(target = globalProcess, args = (file, tok))
                     thread.start()
             else:
-                return False
+                return "Fichier Inexistant"
         except Exception as e:
             print(e)
 
@@ -216,12 +236,36 @@ class list_tokens(object):
     @jsonp
     def index(self, token):
         try:
-            data = {"parsing" : tokens[token]["parsing"],
-                    "topics" : tokens[token]["topics"],
-                    "hashCode" : tokens[token]["hashCode"],
-                    "saved" : tokens[token]["saved"]}
+            data = {"token": tokens[token]["token"],
+         "filename": tokens[token]["filename"],
+         "parsing": tokens[token]["parsing"],
+         "topics": tokens[token]["topics"],
+         "hashCode": tokens[token]["hashCode"],
+         "saved": tokens[token]["saved"]}
         except Exception as e:
             print(e)
+        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
+        return simplejson.dumps(data)
+    index.exposed = True
+
+
+class find_file(object):
+    @jsonp
+    def index(self, file):
+        lst_files = []
+        try:
+            for ff in os.listdir(os.path.join("/root", "documents")):
+                strip = ff.replace("meta_", "").replace(".json", "")
+                if file.strip() in strip:
+                    lst_files.append(os.path.join("/root", "documents", strip))
+        except Exception as e:
+            print(e)
+
+        if len(lst_files) != 0:
+            data = {"files" : ','.join(lst_files)}
+        else:
+            data = {"files" : '0'}
+
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
         return simplejson.dumps(data)
     index.exposed = True
@@ -231,6 +275,7 @@ class list_tokens(object):
 class RacineServeur(object):
     upload = upload()
     list_tokens = list_tokens()
+    find_file = find_file()
 
 
 if True:  # demarrage serveur
