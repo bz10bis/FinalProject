@@ -35,9 +35,7 @@ app.post('/upload', function(req, res) {
                     } else {
                         console.log("file upload at: " + new_path);
                         res.status(200);
-                        res.json({'success': true,
-                            'oldpath' : old_path,
-                        'filename' : filename});
+                        res.json({'success': true})
                     }
                 })
             });
