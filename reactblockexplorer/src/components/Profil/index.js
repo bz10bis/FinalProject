@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import pic from './profil_pic.jpg';
 import Project_list from '../Projects_list'
 import './style.css';
+import Uploader from "../Uploader/index";
+import $ from 'jquery';
 
 const Projects = [
     { id: 1,
@@ -22,7 +22,7 @@ const Projects = [
 ];
 
 const mon_profil = {
-    id : 1,
+    id : "test",
     name: 'Jean Michel',
     lastname : 'Testouille',
     email : 'test@test.com',
@@ -38,31 +38,60 @@ class Profil extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id : mon_profil.id,
-            name: mon_profil.name,
-            lastname : mon_profil.lastname,
-            address  : mon_profil.address,
-            email : mon_profil.email,
-            phone : mon_profil.phone,
-            birth : mon_profil.birth,
-            promotion : mon_profil.promotion,
+            // id : mon_profil.id,
+            // name: mon_profil.name,
+            // lastname : mon_profil.lastname,
+            // address  : mon_profil.address,
+            // email : mon_profil.email,
+            // phone : mon_profil.phone,
+            // birth : mon_profil.birth,
+            // promotion : mon_profil.promotion,
+            id : '',
+            name: '',
+            lastname : '',
+            address  : '',
+            email :'',
+            phone :'',
+            birth :'',
+            promotion :'',
             projects  : mon_profil.projects,
         };
-    };
+
+        $.ajax({
+            url: 'http://169.254.209.164:8000/profil/',
+            dataType: 'jsonp',
+            success: function(data) {
+                console.log(data);
+                this.setState({
+                    id : data['id'],
+                    name: data['name'],
+                    lastname : data.lastname,
+                    address  : data.address,
+                    email : data.email,
+                    phone : data.phone,
+                    birth : data.birth,
+                    promotion : data.promotion
+                });
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    }
 
     render() {
         return (
         <div>
             <div className="container">
-                <div className="row col-md-12">
-                    <div className="col-xs-12 col-sm-6 col-md-6">
+                <div className="row col-md-6">
+                    <div className="col-xs-12 col-sm-12 col-md-12">
                         <div className="well well-sm">
-                            <div className="row">
-                                <div className="col-sm-6 col-md-6">
-                                    <img src={pic} alt=""/>
+                            <div className="row Profil">
+                                <div className="col-sm-12 col-md-12">
+                                    <i className="fas fa-user-circle" style={{fontSize : '200px'}}> </i>
                                 </div>
 
-                                <div className="infos col-sm-6 col-md-8">
+                                <div className="infos col-sm-12 col-md-12">
                                     <h4>{this.state.name} {this.state.lastname}</h4>
                                     <p><i className="fas fa-home"> </i>  <cite title="Address">{this.state.address}</cite></p>
 
@@ -70,14 +99,16 @@ class Profil extends Component {
 
                                     <p><i className="fas fa-birthday-cake"> </i> {this.state.birth}</p>
 
-                                    <div className="btn-group">
-                                        <button type="button" className="btn btn-primary">Modify</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div className="row col-md-6">
+                    <Uploader {...this.state}/>
+                </div>
+
             </div>
 
             <Project_list projects={this.state.projects}/>

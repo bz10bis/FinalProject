@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './style.css';
 import Profil from "../Profil";
-import {BrowserRouter, Route, Switch, NavLink} from 'react-router-dom';
+import Home from "../Home";
+import Blockchain_account from '../Blockchain_account';
+import BlockchainFiles from "../BlockchainFiles/index";
+
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
 class App extends Component {
     render() {
@@ -22,7 +26,7 @@ class App extends Component {
                             <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                                 <ul className="nav navbar-nav">
                                     <li className="home">
-                                        <a href="/">Home</a>
+                                        <a href="/Home">Home</a>
                                     </li>
 
                                     <li className="profil">
@@ -36,13 +40,22 @@ class App extends Component {
                                     </div>
                                     <button type="submit" className="btn btn-default"><i className="fa fa-search"/></button>
                                 </form>
+
+                                <div className="dropdown navbar-form navbar-right">
+                                    <Blockchain_account />
+                                </div>
+
                             </div>
                         </div>
                     </nav>
                 </div>
+
+
+
                 <BrowserRouter>
                     <Switch>
                         <Route path="/Profil" component={Profil}/>
+                        <Route path="/Home" component={Home}/>
                     </Switch>
                 </BrowserRouter>
             </div>
