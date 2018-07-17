@@ -7,7 +7,7 @@ def getText(filename):
 
     try:
         # print(os.path.isfile(filename))
-        print("getting text from "+filename)
+        # print("getting text from "+filename)
         doc = Document(filename)
         fullText = []
         for para in doc.paragraphs:
