@@ -258,11 +258,43 @@ class find_file(object):
     index.exposed = True
 
 
+class file_info(object):
+    @jsonp
+    def index(self, file):
+        ff = os.path.join("/root", "documents", file)
+        fff = os.path.join("/root", "documents", "meta_"+file+".json")
+        if os.path.exists(ff):
+            try:
+                of = open(fff, "r")
+                data = simplejson.load(of)
+            except Exception as e:
+                print(e)
+                data = {"token": "ERROR IN READING FILE",
+                        "filename": "ERROR IN READING FILE",
+                        "contributor": "ERROR IN READING FILE",
+                        "parsing": "ERROR IN READING FILE",
+                        "topics": "ERROR IN READING FILE",
+                        "hashCode": "ERROR IN READING FILE",
+                        "saved": "ERROR IN READING FILE"}
+        else:
+            data = {"token": "UNKNOWN FILE",
+                    "filename": "UNKNOWN FILE",
+                    "contributor": "UNKNOWN FILE",
+                    "parsing": "UNKNOWN FILE",
+                    "topics": "UNKNOWN FILE",
+                    "hashCode": "UNKNOWN FILE",
+                    "saved": "UNKNOWN FILE"}
+        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
+        return simplejson.dumps(data)
+    index.exposed = True
+
+
 # gestion des requetes
 class RacineServeur(object):
     upload = upload()
     list_tokens = list_tokens()
     find_file = find_file()
+    file_info = file_info()
 
 
 if True:  # demarrage serveur
