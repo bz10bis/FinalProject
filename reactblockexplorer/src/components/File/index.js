@@ -3,26 +3,23 @@
  */
 import React, {Component} from 'react';
 import './style.css';
+import MyPdfViewer from './MyPdfViewer';
 
 class File extends Component{
     constructor(props){
         super(props);
         this.state = {
-
-        }
+            filename : props.value,
+            filedir  : 'http://51.38.189.242:3001/'
+        };
+        console.log(props);
     }
 
     render(){
         return(
-            <Row>
-                <Col s={12}>
-                    <Chip>
-                        <img src='profil_pic.jpg' alt='Contact Person' />
-                        Jane Doe
-                    </Chip>
-                    <Tag>tag</Tag>
-                </Col>
-            </Row>
+            <div className="File container form-group">
+                <MyPdfViewer {...this.state}/>
+            </div>
         )
     }
 }

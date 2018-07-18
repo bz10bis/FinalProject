@@ -38,45 +38,30 @@ class Profil extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // id : mon_profil.id,
-            // name: mon_profil.name,
-            // lastname : mon_profil.lastname,
-            // address  : mon_profil.address,
-            // email : mon_profil.email,
-            // phone : mon_profil.phone,
-            // birth : mon_profil.birth,
-            // promotion : mon_profil.promotion,
-            id : '',
-            name: '',
-            lastname : '',
-            address  : '',
-            email :'',
-            phone :'',
-            birth :'',
-            promotion :'',
+            valid_auth : props.valid_auth,
+            id : mon_profil.id,
+            name: mon_profil.name,
+            lastname : mon_profil.lastname,
+            address  : mon_profil.address,
+            email : mon_profil.email,
+            phone : mon_profil.phone,
+            birth : mon_profil.birth,
+            promotion : mon_profil.promotion,
             projects  : mon_profil.projects,
         };
 
-        $.ajax({
-            url: 'http://169.254.209.164:8000/profil/',
-            dataType: 'jsonp',
-            success: function(data) {
-                console.log(data);
-                this.setState({
-                    id : data['id'],
-                    name: data['name'],
-                    lastname : data.lastname,
-                    address  : data.address,
-                    email : data.email,
-                    phone : data.phone,
-                    birth : data.birth,
-                    promotion : data.promotion
-                });
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+        // $.ajax({
+        //     url: '',
+        //     dataType: 'jsonp',
+        //     success: function(data) {
+        //         console.log(data);
+        //         this.setState({
+        //         });
+        //     }.bind(this),
+        //     error: function(xhr, status, err) {
+        //         console.error(this.props.url, status, err.toString());
+        //     }.bind(this)
+        // });
     }
 
     render() {

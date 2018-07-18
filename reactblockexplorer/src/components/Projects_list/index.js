@@ -20,7 +20,7 @@ class Projects_list extends Component {
                 <div className="list-group">
                     <div className="project_list_header">My Projects</div>
                     <div>
-                        {this.props.projects.map(c => <Project_preview id={c.id} name={c.name} date={c.date} describe={c.describe} teatcher={c.teatcher} deadline={c.deadline} deliverable={c.deliverable} status="Details"/>)}
+                        {this.props.projects.map(c => <Project_preview key={c.id} id={c.id} name={c.name} date={c.date} describe={c.describe} teatcher={c.teatcher} deadline={c.deadline} deliverable={c.deliverable} status="Details"/>)}
                     </div>
                 </div>
             </div>
