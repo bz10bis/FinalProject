@@ -3,8 +3,6 @@ import './style.css';
 import Web3 from 'web3';
 import BlockchainFiles from "../BlockchainFiles/index";
 
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-
 class Blockchain_account extends Component {
     constructor(props) {
         super(props);
@@ -50,7 +48,7 @@ class Blockchain_account extends Component {
             }).then(() => {
                 block_ids.push(currBlockObject.number);
                 block_hashes.push(currBlockObject.hash);
-            });            
+            });
         }
         this.setState({
             block_ids: block_ids,
@@ -62,7 +60,7 @@ class Blockchain_account extends Component {
         console.log("Block hashes");
         console.log(this.state.block_hashes);
         console.log("Length: " + this.state.block_hashes.length);
-    
+
         return (
                 <div className="Blockchain_account">
                     Current account: {this.state.curr_account}

@@ -1,0 +1,36 @@
+.react-autosuggest__suggestions-container{
+    z-index: 1000;
+    background-color: #F7F7F7;
+    border: 1px solid;
+    border-radius: 0 0 5px 5px;
+    position: absolute;
+    color: #000;
+    font-size: 20px;
+}
+
+.react-autosuggest__input {
+    height: 40px;
+    border: 1px solid;
+    border-radius: 4px;
+    color: #000;
+    width: 240px;
+    padding: 10px 20px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    -webkit-appearance: none;
+}
+
+.file_list{
+    border: 1px solid;
+}
+
+
+.react-autosuggest__suggestion {
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+.react-autosuggest__suggestion--highlighted {
+    background-color: #ddd;
+}
