@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import './style.css';
-import axios, { post } from 'axios';
+import axios from 'axios';
 
 class Uploader extends Component {
 
@@ -14,8 +14,11 @@ class Uploader extends Component {
             uploadStatus: false,
             id : 'uploader_' + props.id,
             projects : props.projects,
-            url: 'https://localhost:3001/upload',
+            url: 'http://51.38.189.242:3001/upload',
+            progress : 0,
+            progress_status : '',
             file: null,
+            token: null
         };
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.fileSelected = this.fileSelected.bind(this);
@@ -30,9 +33,13 @@ class Uploader extends Component {
         this.fileUpload(this.state.file);
     }
 
+    updateProgressBar(){
+
+    }
+
     fileUpload(file){
         console.log(this.state.file);
-        const url = 'http://localhost:3001/upload';
+        const url = this.state.url;
         const formData = new FormData();
         formData.append('file',file);
         const config = {
@@ -41,18 +48,36 @@ class Uploader extends Component {
                 'content-type': 'multipart/form-data'
             }
         };
-        axios.post(url, formData,config);
+        axios.post(url, formData,config)
+            .then( (res) => {
+                console.log(res);
+                axios.post("http://51.38.189.242:8000/upload/?file="+this.state.file.name, {} , {
+                    headers: { 'Access-Control-Allow-Origin': '*'}
+                }).then(res => {
+                    console.log(res);
+                })
+            })
+    }
+
+    watchProcess(data) {
+        while(data.LDA === 'pending'){
+            axios.post("http://51.38.189.242:8000/list_tokens/?token="+this.state.token, {} , {
+                headers: { 'Access-Control-Allow-Origin': '*'}
+            }).then(res => {
+                console.log(res);
+            })
+        }
     }
 
     getStatus(){
-        
+
     }
 
 render() {
         return (
-            <div id={this.state.id} className="Uploader col-md-12 col-sx-12 col-sm-12">
-                <div className="form-group row col-md-12">
-                    <p>My projects</p>
+            <div id={this.state.id} className="Uploader container col-md-12 col-sx-12 col-sm-12">
+                <div className="form-group row col-md-12 col-sx-12 col-sm-12">
+                    <h1>Select a Project</h1>
                     <select className="form-control " id="selector">
                         {
                             this.state.projects.map(function(project) {
@@ -63,12 +88,18 @@ render() {
                     </select>
                 </div>
 
-                <div className="row col-md-12">
+                <div className="row col-md-12 col-sx-12 col-sm-12">
                     <form onSubmit={this.onFormSubmit}>
-                        <h1>File Upload</h1>
-                        <input type="file" onChange={this.fileSelected} />
-                        <button type="submit">Upload</button>
+                        <span className="btn btn-default btn-file">Browse ...<input type="file" onChange={this.fileSelected}/></span>
+                        <button type="submit" className="btn btn-dark"> <i className="fas fa-upload"> </i></button>
                     </form>
+                </div>
+
+
+                <div className="row progress col-md-12 col-sx-12 col-sm-12">
+                    <div className="progress-bar" role="progressbar" aria-valuenow={this.state.progress} aria-valuemin="0" aria-valuemax="100" style={{width: this.state.progress+'%'}}>
+                        <span className="">{this.state.progress_status}</span>
+                    </div>
                 </div>
             </div>
         );
