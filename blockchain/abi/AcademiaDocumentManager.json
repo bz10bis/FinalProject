@@ -1,0 +1,284 @@
+[
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "documentToOwner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_tokenAddress",
+				"type": "address"
+			}
+		],
+		"name": "setAcademiaTokenContractAddress",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_docId",
+				"type": "uint256"
+			},
+			{
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_docid",
+				"type": "uint256"
+			}
+		],
+		"name": "getDocInfo",
+		"outputs": [
+			{
+				"name": "docname",
+				"type": "string"
+			},
+			{
+				"name": "dochash",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "uploadPrice",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getUserDocId",
+		"outputs": [
+			{
+				"name": "docsid",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"name": "_docHash",
+				"type": "string"
+			}
+		],
+		"name": "createDocument",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "ownerToDocId",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "documents",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "docHash",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_docId",
+				"type": "uint256"
+			},
+			{
+				"name": "_newHash",
+				"type": "string"
+			}
+		],
+		"name": "updateDocument",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_uploadPrice",
+				"type": "uint256"
+			},
+			{
+				"name": "_tokenAddress",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_docId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_docHash",
+				"type": "string"
+			}
+		],
+		"name": "NewDocument",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_hash",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "_newHash",
+				"type": "string"
+			}
+		],
+		"name": "UpdateDocument",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_docId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "TransferDocument",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "admin",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "newAddress",
+				"type": "address"
+			}
+		],
+		"name": "UpdateAddress",
+		"type": "event"
+	}
+]
