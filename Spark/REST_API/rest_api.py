@@ -6,7 +6,6 @@ import json
 import hashlib
 import cherrypy
 import sys
-from cherrypy import _cperror
 from pyspark.sql import SparkSession
 import random
 import os
@@ -20,16 +19,10 @@ from pyspark.context import SparkContext
 from pyspark.sql import SQLContext
 
 _demo = False
-
 _flag_init = False
 __version__ = '1.0'
 
 tokens = {}
-# tls_config = docker.tls.TLSConfig(
-#     client_cert=('D:\certs\cert.pem', 'D:\certs\key.pem'),
-#     ca_cert='D:\certs\ca.pem'
-#     )
-# client = docker.DockerClient(base_url="192.168.99.100:2376",tls=tls_config)
 
 
 # ----------- gestion de jsonp callback -----------------#
@@ -41,7 +34,6 @@ def jsonp(func):
             callback, _ = kwargs['callback'], kwargs['_']
             del kwargs['callback'], kwargs['_']
         ret = func(self, *args, **kwargs)
-        # cherrypy.response.headers['Content-Type'] = "APPLICATION/JSON"
         if callback is not None:
             ret = '%s(%s)' % (callback, simplejson.dumps(ret))
         return ret
@@ -61,65 +53,43 @@ def find_ext(filename):
 
 
 def pdf_process(file):
-    try:
-        print("********** BEGINNING PDF PROCESS **********")
-        text = px.getText(file)
-        if text != "":
-            cleaned_text = px.cleanText(text)
-            ct = px.unidecode.unidecode(cleaned_text)
-            return ct
-        else:
-            print("Text empty")
-            exit(0)
-
-    except Exception as e:
-        print(e)
-        exit(0)
+    print("********** BEGINNING PDF PROCESS **********")
+    text = px.getText(file)
+    if text != "":
+        cleaned_text = px.cleanText(text)
+        ct = px.unidecode.unidecode(cleaned_text)
+        return ct
+    else:
+        print("Text empty")
 
 
 def docx_process(file):
-    try:
-        print("********** BEGINNING DOCX PROCESS **********")
-        text = dx.getText(file)
-        if text != "":
-            cleaned_text = dx.cleanText(text)
-            ct = dx.unidecode.unidecode(cleaned_text)
-            return ct
-        else:
-            print("Text empty")
-            exit(0)
-
-    except Exception as e:
-        print(e)
-        exit(0)
+    print("********** BEGINNING DOCX PROCESS **********")
+    text = dx.getText(file)
+    if text != "":
+        cleaned_text = dx.cleanText(text)
+        ct = dx.unidecode.unidecode(cleaned_text)
+        return ct
+    else:
+        print("Text empty")
 
 
 def other_process(file):
-    try:
-        print("********** BEGINNING PROCESS **********")
-        text = ox.getText(file)
-        if text != "":
-            cleaned_text = ox.cleanText(text)
-            ct = ox.unidecode.unidecode(cleaned_text)
-            return ct
-        else:
-            print("Text empty")
-            exit(0)
-
-    except Exception as e:
-        print(e)
+    print("********** BEGINNING PROCESS **********")
+    text = ox.getText(file)
+    if text != "":
+        cleaned_text = ox.cleanText(text)
+        ct = ox.unidecode.unidecode(cleaned_text)
+        return ct
+    else:
+        print("Text empty")
         exit(0)
 
 
 def hashDoc(string, token):
-    hashCode = ""
-    try:
-        string = string.encode("utf-8")
-        hashCode = hashlib.sha256(string).hexdigest()
-        tokens[token]["hashCode"] = hashCode
-    except Exception as e:
-        print(e)
-
+    string = string.encode("utf-8")
+    hashCode = hashlib.sha256(string).hexdigest()
+    tokens[token]["hashCode"] = hashCode
     return hashCode
 
 
@@ -129,9 +99,10 @@ def saveFile(file, token):
     newfile = "meta_"+newfile+".json"
     newfile = os.path.join("/root", "documents", newfile)
 
-    tokens[token]["saved"] = newfile
+    tokens[token]["saved"] = os.path.join("/home","FinalProject","ExpressServer","uploads", file)
     f = {"token": tokens[token]["token"],
          "filename": tokens[token]["filename"],
+         "contributor": tokens[token]["contributor"],
          "parsing": tokens[token]["parsing"],
          "topics": tokens[token]["topics"],
          "hashCode": tokens[token]["hashCode"],
@@ -140,7 +111,8 @@ def saveFile(file, token):
     with open(newfile, "w") as of:
         of.write(simplejson.dumps(f))
 
-    os.rename(os.path.join("/home","FinalProject","ExpressServer","uploads", file), os.path.join("/root", "documents", file))
+    os.rename(os.path.join("/home","FinalProject","ExpressServer","uploads", file),
+              os.path.join("/root", "documents", file))
 
 
 def lda_spark(stringText, token):
@@ -152,12 +124,11 @@ def lda_spark(stringText, token):
 def parsingFile(file, token):
     global tokens
     try:
-        # ff = os.path.join("D:\\PROJET_ANNUEL\\FinalProject\\ExpressServer\\uploads", file)
-        ff = os.path.join("/home","FinalProject","ExpressServer","uploads", file)
+        ff = os.path.join("/home", "FinalProject", "ExpressServer", "uploads", file)
     except Exception as e:
         ff = ""
-        data = "Error"
         print(e)
+
     if ff != "":
         ext_val = find_ext(ff)
         if ext_val == "DOCX":
@@ -167,13 +138,16 @@ def parsingFile(file, token):
         elif ext_val == "TXT":
             data = other_process(ff)
         else:
-            data = "nothing"
+            data = other_process(ff)
         tokens[token]["parsing"] = "OK"
         return data
+    else:
+        tokens[token]["parsing"] = "FAILED"
 
 
 def globalProcess(file, token):
     global tokens
+    stringDoc = True
     try:
         try:
             stringDoc = parsingFile(file, token)
@@ -202,32 +176,33 @@ def globalProcess(file, token):
 
 class upload(object):
     @jsonp
-    def index(self, file):
+    def index(self, file, contributor):
         global tokens
+        tok = ''
         try:
-            tok = ''
             # verification si fichier existe
             if os.path.exists(os.path.join("/home", "FinalProject", "ExpressServer", "uploads", file)):
                 # Create random token
                 tok = ''.join(random.choice("abcdefghijklmnopqrstuvwxyz1234567890") for _ in range(25))
                 # initialisation de la variable
                 if tok not in tokens:
-                    tokens[tok] = {"token" : tok,
-                                   "filename" : file,
-                    "parsing" : "pending",
-                    "topics" : "pending",
-                    "hashCode" : "pending",
-                    "saved" : "pending"}
-                    thread = Thread(target = globalProcess, args = (file, tok))
+                    tokens[tok] = {"token": tok,
+                                   "filename": file,
+                                   "contributor": contributor,
+                                   "parsing": "pending",
+                                   "topics": "pending",
+                                   "hashCode": "pending",
+                                   "saved": "pending"}
+                    thread = Thread(target=globalProcess, args=(file, tok))
                     thread.start()
             else:
-                return "Fichier Inexistant"
+                tok = ""
         except Exception as e:
             print(e)
 
-        # cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
-        # return simplejson.dumps(data)
-        return tok
+        data = {"token": tok}
+        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
+        return simplejson.dumps(data)
 
     index.exposed = True
 
@@ -237,13 +212,20 @@ class list_tokens(object):
     def index(self, token):
         try:
             data = {"token": tokens[token]["token"],
-         "filename": tokens[token]["filename"],
-         "parsing": tokens[token]["parsing"],
-         "topics": tokens[token]["topics"],
-         "hashCode": tokens[token]["hashCode"],
-         "saved": tokens[token]["saved"]}
-        except Exception as e:
-            print(e)
+                    "filename": tokens[token]["filename"],
+                    "contributor": tokens[token]["contributor"],
+                    "parsing": tokens[token]["parsing"],
+                    "topics": tokens[token]["topics"],
+                    "hashCode": tokens[token]["hashCode"],
+                    "saved": tokens[token]["saved"]}
+        except:
+            data = {"token": "UNKNOWN TOKEN",
+                    "filename": "UNKNOWN TOKEN",
+                    "contributor": "UNKNOWN TOKEN",
+                    "parsing": "UNKNOWN TOKEN",
+                    "topics": "UNKNOWN TOKEN",
+                    "hashCode": "UNKNOWN TOKEN",
+                    "saved": "UNKNOWN TOKEN"}
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
         return simplejson.dumps(data)
     index.exposed = True
@@ -253,19 +235,24 @@ class find_file(object):
     @jsonp
     def index(self, file):
         lst_files = []
+        idx_lst_files = []
         try:
             for ff in os.listdir(os.path.join("/root", "documents")):
-                strip = ff.replace("meta_", "").replace(".json", "")
-                if file.strip() in strip:
-                    lst_files.append(os.path.join("/root", "documents", strip))
+                if "meta_" not in ff and ".json" not in ff:
+                    if file.strip().lower() in ff.lower():
+                        lst_files.append(os.path.join("/root", "documents", ff))
+            for f in lst_files:
+                idx_lst_files.append(str(lst_files.index(f)))
+
+            ff = dict(zip(idx_lst_files, lst_files))
+
+            if len(lst_files) != 0:
+                data = {"files": ff}
+            else:
+                data = {"files": {}}
         except Exception as e:
+            data = {"files": {}}
             print(e)
-
-        if len(lst_files) != 0:
-            data = {"files" : ','.join(lst_files)}
-        else:
-            data = {"files" : '0'}
-
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
         return simplejson.dumps(data)
     index.exposed = True
