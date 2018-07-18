@@ -15,23 +15,24 @@ contract AcademiaDocumentStorage {
 
     struct Document {
         string name;
-        uint docHash;
+        string docHash;
     }
 
     Document[] public documents;
 
     mapping (uint => address) public documentToOwner;
     mapping (address => uint) ownerToDocumentsCount;
+    mapping (address => uint[]) public ownerToDocId;
     
     event NewDocument(
         address _owner,
         uint _docId,
-        uint _docHash
+        string _docHash
     );
 
     event UpdateDocument(
-        uint _hash,
-        uint _newHash
+        string _hash,
+        string _newHash
     );
 
     event TransferDocument(
@@ -61,18 +62,19 @@ contract AcademiaDocumentStorage {
         academiaTokenContract = AcademiaTokenInterface(_tokenAddress);
     }
 
-    function createDocument(string _name, uint _docHash) public returns(bool success) {
+    function createDocument(string _name, string _docHash) public returns(bool success) {
         require(academiaTokenContract.balanceOf(msg.sender) >= uploadPrice);
         uint id = documents.push(Document(_name, _docHash)) - 1;
         documentToOwner[id] = msg.sender;
         ownerToDocumentsCount[msg.sender]++;
+        ownerToDocId[msg.sender].push(id);
         //academiaTokenContract.transfer(admin, uploadPrice);
         //academiaTokenContract.balanceOf(msg.sender) = academiaTokenContract.balanceOf(msg.sender).sub(uploadPrice);
         emit NewDocument(msg.sender, id, _docHash);
         return true;
     }
 
-    function updateDocument(uint _docId, uint _newHash) public onlyOwner(_docId) {
+    function updateDocument(uint _docId, string _newHash) public onlyOwner(_docId) {
         Document storage myDocument = documents[_docId];
         emit UpdateDocument(myDocument.docHash, _newHash);
         myDocument.docHash = _newHash;
@@ -89,5 +91,13 @@ contract AcademiaDocumentStorage {
     function setAcademiaTokenContractAddress(address _tokenAddress) external onlyAdmin {
         academiaTokenContract = AcademiaTokenInterface(_tokenAddress);
         emit UpdateAddress(msg.sender, _tokenAddress);
+    }
+
+    function getUserDocId() public returns(uint[] docsid) {
+        return ownerToDocId[msg.sender];
+    }
+
+    function getDocInfo(uint _docid) public view returns(string docname, string dochash){
+        return (documents[_docid].name, documents[_docid].docHash);
     }
 }

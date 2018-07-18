@@ -1,0 +1,12 @@
+[Unit]
+Description=Academia
+
+[Service]
+Type=simple
+User=root
+Restart=always
+WorkingDirectory=/root/academia_network
+ExecStart=/usr/bin/geth --config academianodeconf.toml
+
+[Install]
+WantedBy=default.target
