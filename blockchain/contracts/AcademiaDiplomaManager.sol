@@ -21,6 +21,7 @@ contract AcademiaDiplomaManager {
 
     mapping (uint => address) public diplomeToOwner;
     mapping (address => uint) ownerToDiplomesCount;
+    mapping (address => uint[]) ownerToDiplomaIds;
     mapping (address => bool) isValidator;
 
     event NewDiploma(
@@ -56,5 +57,13 @@ contract AcademiaDiplomaManager {
 
     function setAcademiaTokenContractAddress(address _tokenAddress) external onlyAdminDiploma {
         academiaTokenContract = AcademiaTokenInterface(_tokenAddress);
+    } 
+    
+    function getDiplomaIds() public view returns(uint[] ids) {
+        return ownerToDiplomaIds[msg.sender];
+    }
+
+    function getDiplomaInfo(uint id) public view returns(string diplomaname, string firstname, string lastname) {
+        return (diplomes[id].name, diplomes[id].firstname, diplomes[id].lastname);
     }
 }
