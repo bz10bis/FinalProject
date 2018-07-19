@@ -42,8 +42,25 @@ systemctl status geth
 
 ### Spark 
 
+Spark est utilisé pour la mise en place d'algorithme de LDA, dans le but de générer 
+les thèmes d'un document en entrée.
 
 ### Cherry Py
+
+Serveur backend permettant la création d'API REST.
+
+Les API :
+* upload : Permet le lancement de la chaine de traitement. Prend le nom du fichier et le contributeur comme paramètre. ``` http://51.38.189.242:8000/upload/?file=<fichier>&contributor=<contributeur>```
+* list_tokens : Permet de récupérer les métadonnées d'un token passé en argument. ``` http://51.38.189.242:8000/list_token/?token=<token>```
+* find_file : Permet le listage des fichiers en base de données. ``` http://51.38.189.242:8000/find_file/?file=<chaine de caractères>```
+* file_info : Permet de récupérer les métadonnées par rapport au nom d'un fichier passé en paramètre. ``` http://51.38.189.242:8000/file_info/?file=<fichier>```
+
+La chaine de traitement agit comme suit : 
+* Vérification de l'existence du fichier sur le serveur
+* Parsing du fichier passé en entrée
+* Création d'un hash basé sur le contenu du fichier
+* Envoi du contenu parsé dans un LDA, permettant la génération des thèmes des documents
+* Sauvegarde du fichier original et du fichier de métadonnées dans hadoop
 
 ### React
 
