@@ -15,10 +15,11 @@ Gerome Cabezas
 Contient toutes les ressources relatives a la blockchain privée ETH incluant les SmartContracts les test et les commandes 
 
 
-Pour lancer le noeud academia manuellement:
+Pour lancer un noeud academia manuellement:
 
 ```
 cd /root/nodeAcademia/
+
 geth --rpc --rpcport 8545 --port 30303 --rpcaddr 0.0.0.0 --rpcapi eth,net,web3,personal,
 clique --datadir node/ --unlock 0x5c8711c24ea9220fea3c3cb9e994911adfce4bdf --networkid 15 --mine --rpccorsdomain "*" --password passfile
 ```
@@ -62,6 +63,8 @@ La chaine de traitement agit comme suit :
 * Envoi du contenu parsé dans un LDA, permettant la génération des thèmes des documents
 * Sauvegarde du fichier original et du fichier de métadonnées dans hadoop
 
-### React
+### ReactBlockexplorer
+Contient le front end. React fonctionne avec un systeme de composants qu'on peut trouver dans reactblockecplorer/src/components
+### ExpressServer
 
-### Express
+Serveur Backend de front React il gère les uploads de fichiers
